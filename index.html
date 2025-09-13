@@ -20,7 +20,7 @@
         }
 
         .container {
-            max-width: 500px;
+            max-width: 600px;
             margin: 0 auto;
             background: white;
             border-radius: 8px;
@@ -95,6 +95,37 @@
         .form-group input:focus {
             outline: none;
             border-color: #2c3e50;
+        }
+
+        .difficulty-section {
+            background: white;
+            border: 1px solid #dee2e6;
+            border-radius: 4px;
+            padding: 8px;
+            margin-bottom: 8px;
+        }
+
+        .difficulty-title {
+            font-size: 0.8em;
+            font-weight: 600;
+            margin-bottom: 6px;
+            color: #2c3e50;
+        }
+
+        .score-count-input {
+            display: flex;
+            gap: 4px;
+            align-items: center;
+            margin-bottom: 4px;
+        }
+
+        .score-count-input input {
+            width: 50px;
+            padding: 4px 6px;
+            border: 1px solid #dee2e6;
+            border-radius: 3px;
+            font-size: 11px;
+            text-align: center;
         }
 
         .calculate-btn {
@@ -296,47 +327,13 @@
                 font-size: 9px;
             }
         }
-
-        /* 매우 작은 화면 */
-        @media (max-width: 320px) {
-            body {
-                padding: 4px;
-                font-size: 12px;
-            }
-            
-            .container {
-                max-width: 100%;
-            }
-            
-            .content {
-                padding: 6px;
-            }
-            
-            .header {
-                padding: 8px 10px;
-            }
-            
-            .header h1 {
-                font-size: 1em;
-            }
-            
-            .section-card {
-                padding: 6px;
-            }
-            
-            .result-table th,
-            .result-table td {
-                padding: 2px 1px;
-                font-size: 8px;
-            }
-        }
     </style>
 </head>
 <body>
     <div class="container">
         <div class="header">
             <h1>📊 시험 배점 계산기</h1>
-            <p>정확한 총점 매칭과 난이도별 배점 최적화</p>
+            <p>난이도별 배점 개수 설정 및 자동 문항 배정</p>
         </div>
 
         <div class="content">
@@ -349,7 +346,7 @@
 
             <div class="input-section">
                 <div class="section-card">
-                    <div class="section-title">📝 객관식</div>
+                    <div class="section-title">📝 객관식 문항</div>
                     <div class="form-group">
                         <label>전체 배점</label>
                         <input type="number" id="mcTotalScore" placeholder="60" min="0" step="0.1">
@@ -358,22 +355,40 @@
                         <label>전체 문항</label>
                         <input type="number" id="mcTotalQuestions" placeholder="20" min="0">
                     </div>
-                    <div class="form-group">
-                        <label>쉬운 문항</label>
-                        <input type="number" id="mcEasyCount" placeholder="8" min="0">
+                    
+                    <div class="difficulty-section">
+                        <div class="difficulty-title">쉬운 문항</div>
+                        <div class="score-count-input">
+                            <label>문항수:</label>
+                            <input type="number" id="mcEasyCount" placeholder="8" min="0">
+                            <label>배점개수:</label>
+                            <input type="number" id="mcEasyScoreCount" placeholder="3" min="1" max="10">
+                        </div>
                     </div>
-                    <div class="form-group">
-                        <label>보통 문항</label>
-                        <input type="number" id="mcNormalCount" placeholder="8" min="0">
+                    
+                    <div class="difficulty-section">
+                        <div class="difficulty-title">보통 문항</div>
+                        <div class="score-count-input">
+                            <label>문항수:</label>
+                            <input type="number" id="mcNormalCount" placeholder="8" min="0">
+                            <label>배점개수:</label>
+                            <input type="number" id="mcNormalScoreCount" placeholder="4" min="1" max="10">
+                        </div>
                     </div>
-                    <div class="form-group">
-                        <label>어려운 문항</label>
-                        <input type="number" id="mcHardCount" placeholder="4" min="0">
+                    
+                    <div class="difficulty-section">
+                        <div class="difficulty-title">어려운 문항</div>
+                        <div class="score-count-input">
+                            <label>문항수:</label>
+                            <input type="number" id="mcHardCount" placeholder="4" min="0">
+                            <label>배점개수:</label>
+                            <input type="number" id="mcHardScoreCount" placeholder="3" min="1" max="10">
+                        </div>
                     </div>
                 </div>
 
                 <div class="section-card">
-                    <div class="section-title">✍️ 서술형</div>
+                    <div class="section-title">✍️ 서술형 문항</div>
                     <div class="form-group">
                         <label>전체 배점</label>
                         <input type="number" id="descTotalScore" placeholder="40" min="0" step="0.1">
@@ -382,17 +397,35 @@
                         <label>전체 문항</label>
                         <input type="number" id="descTotalQuestions" placeholder="4" min="0">
                     </div>
-                    <div class="form-group">
-                        <label>쉬운 문항</label>
-                        <input type="number" id="descEasyCount" placeholder="1" min="0">
+                    
+                    <div class="difficulty-section">
+                        <div class="difficulty-title">쉬운 문항</div>
+                        <div class="score-count-input">
+                            <label>문항수:</label>
+                            <input type="number" id="descEasyCount" placeholder="1" min="0">
+                            <label>배점개수:</label>
+                            <input type="number" id="descEasyScoreCount" placeholder="2" min="1" max="10">
+                        </div>
                     </div>
-                    <div class="form-group">
-                        <label>보통 문항</label>
-                        <input type="number" id="descNormalCount" placeholder="2" min="0">
+                    
+                    <div class="difficulty-section">
+                        <div class="difficulty-title">보통 문항</div>
+                        <div class="score-count-input">
+                            <label>문항수:</label>
+                            <input type="number" id="descNormalCount" placeholder="2" min="0">
+                            <label>배점개수:</label>
+                            <input type="number" id="descNormalScoreCount" placeholder="3" min="1" max="10">
+                        </div>
                     </div>
-                    <div class="form-group">
-                        <label>어려운 문항</label>
-                        <input type="number" id="descHardCount" placeholder="1" min="0">
+                    
+                    <div class="difficulty-section">
+                        <div class="difficulty-title">어려운 문항</div>
+                        <div class="score-count-input">
+                            <label>문항수:</label>
+                            <input type="number" id="descHardCount" placeholder="1" min="0">
+                            <label>배점개수:</label>
+                            <input type="number" id="descHardScoreCount" placeholder="2" min="1" max="10">
+                        </div>
                     </div>
                 </div>
             </div>
@@ -408,25 +441,32 @@
     </div>
 
     <script>
-        class FinalExamScoreCalculator {
+        class AdvancedExamScoreCalculator {
             constructor() {
                 this.multiple_choice = {
                     total_score: 0,
                     total_questions: 0,
                     easy_count: 0,
                     normal_count: 0,
-                    hard_count: 0
+                    hard_count: 0,
+                    easy_score_count: 0,
+                    normal_score_count: 0,
+                    hard_score_count: 0
                 };
                 this.descriptive = {
                     total_score: 0,
                     total_questions: 0,
                     easy_count: 0,
                     normal_count: 0,
-                    hard_count: 0
+                    hard_count: 0,
+                    easy_score_count: 0,
+                    normal_score_count: 0,
+                    hard_score_count: 0
                 };
             }
 
-            setMultipleChoice(total_score, total_questions, easy_count, normal_count, hard_count) {
+            setMultipleChoice(total_score, total_questions, easy_count, normal_count, hard_count, 
+                            easy_score_count, normal_score_count, hard_score_count) {
                 if (easy_count + normal_count + hard_count !== total_questions) {
                     throw new Error("객관식: 난이도별 문항 수의 합이 전체 문항 수와 일치하지 않습니다.");
                 }
@@ -436,11 +476,15 @@
                     total_questions: total_questions,
                     easy_count: easy_count,
                     normal_count: normal_count,
-                    hard_count: hard_count
+                    hard_count: hard_count,
+                    easy_score_count: easy_score_count,
+                    normal_score_count: normal_score_count,
+                    hard_score_count: hard_score_count
                 };
             }
 
-            setDescriptive(total_score, total_questions, easy_count, normal_count, hard_count) {
+            setDescriptive(total_score, total_questions, easy_count, normal_count, hard_count,
+                         easy_score_count, normal_score_count, hard_score_count) {
                 if (easy_count + normal_count + hard_count !== total_questions) {
                     throw new Error("서술형: 난이도별 문항 수의 합이 전체 문항 수와 일치하지 않습니다.");
                 }
@@ -450,7 +494,10 @@
                     total_questions: total_questions,
                     easy_count: easy_count,
                     normal_count: normal_count,
-                    hard_count: hard_count
+                    hard_count: hard_count,
+                    easy_score_count: easy_score_count,
+                    normal_score_count: normal_score_count,
+                    hard_score_count: hard_score_count
                 };
             }
 
@@ -462,9 +509,39 @@
                 return Math.round(value * 10) / 10;
             }
 
+            // 난이도별 배점 생성
+            generateScoresForDifficulty(base_score, score_count, isDescriptive) {
+                const scores = [];
+                const step = isDescriptive ? 0.5 : 0.1;
+                const min_score = isDescriptive ? 0.5 : 0.1;
+                
+                // 기본 배점에서 시작해서 step씩 증가
+                for (let i = 0; i < score_count; i++) {
+                    const score = Math.max(min_score, base_score + (i * step));
+                    scores.push(isDescriptive ? this.roundToHalf(score) : this.roundToTenth(score));
+                }
+                
+                return scores;
+            }
+
+            // 문항 배정 알고리즘
+            distributeQuestionsToScores(total_questions, scores, maxIterations = 1000) {
+                const question_counts = new Array(scores.length).fill(0);
+                
+                // 초기 배정: 각 배점에 균등하게 배정
+                const base_count = Math.floor(total_questions / scores.length);
+                const remainder = total_questions % scores.length;
+                
+                for (let i = 0; i < scores.length; i++) {
+                    question_counts[i] = base_count + (i < remainder ? 1 : 0);
+                }
+                
+                return question_counts;
+            }
+
             calculateScoresPrecise(section_info, isDescriptive = false, maxIterations = 1000) {
                 if (section_info.total_questions === 0) {
-                    return { easy: 0, normal: 0, hard: 0 };
+                    return { easy: [], normal: [], hard: [] };
                 }
 
                 const easy_weight = 1.0;
@@ -476,62 +553,42 @@
                                    section_info.hard_count * hard_weight);
 
                 if (total_weight === 0) {
-                    return { easy: 0, normal: 0, hard: 0 };
+                    return { easy: [], normal: [], hard: [] };
                 }
 
+                // 각 난이도별 총 배점 계산
                 const easy_total_score = (section_info.total_score * easy_weight * section_info.easy_count) / total_weight;
                 const normal_total_score = (section_info.total_score * normal_weight * section_info.normal_count) / total_weight;
                 const hard_total_score = (section_info.total_score * hard_weight * section_info.hard_count) / total_weight;
 
-                let easy_score = section_info.easy_count > 0 ? easy_total_score / section_info.easy_count : 0;
-                let normal_score = section_info.normal_count > 0 ? normal_total_score / section_info.normal_count : 0;
-                let hard_score = section_info.hard_count > 0 ? hard_total_score / section_info.hard_count : 0;
+                // 난이도별 평균 배점 계산
+                let easy_avg_score = section_info.easy_count > 0 ? easy_total_score / section_info.easy_count : 0;
+                let normal_avg_score = section_info.normal_count > 0 ? normal_total_score / section_info.normal_count : 0;
+                let hard_avg_score = section_info.hard_count > 0 ? hard_total_score / section_info.hard_count : 0;
 
+                // 난이도별 배점 생성
+                const easy_scores = this.generateScoresForDifficulty(easy_avg_score, section_info.easy_score_count, isDescriptive);
+                const normal_scores = this.generateScoresForDifficulty(normal_avg_score, section_info.normal_score_count, isDescriptive);
+                const hard_scores = this.generateScoresForDifficulty(hard_avg_score, section_info.hard_score_count, isDescriptive);
+
+                // 문항 배정
+                const easy_questions = this.distributeQuestionsToScores(section_info.easy_count, easy_scores);
+                const normal_questions = this.distributeQuestionsToScores(section_info.normal_count, normal_scores);
+                const hard_questions = this.distributeQuestionsToScores(section_info.hard_count, hard_scores);
+
+                // 총점 정확히 맞추기 위한 반복 조정
                 for (let iteration = 0; iteration < maxIterations; iteration++) {
-                    if (isDescriptive) {
-                        easy_score = this.roundToHalf(easy_score);
-                        normal_score = this.roundToHalf(normal_score);
-                        hard_score = this.roundToHalf(hard_score);
-                    } else {
-                        easy_score = this.roundToTenth(easy_score);
-                        normal_score = this.roundToTenth(normal_score);
-                        hard_score = this.roundToTenth(hard_score);
+                    // 현재 총점 계산
+                    let calculated_total = 0;
+                    for (let i = 0; i < easy_scores.length; i++) {
+                        calculated_total += easy_scores[i] * easy_questions[i];
                     }
-
-                    if (easy_score > normal_score && section_info.easy_count > 0 && section_info.normal_count > 0) {
-                        const avg = (easy_score + normal_score) / 2;
-                        if (isDescriptive) {
-                            easy_score = this.roundToHalf(avg - 0.25);
-                            normal_score = this.roundToHalf(avg + 0.25);
-                        } else {
-                            easy_score = this.roundToTenth(avg - 0.1);
-                            normal_score = this.roundToTenth(avg + 0.1);
-                        }
+                    for (let i = 0; i < normal_scores.length; i++) {
+                        calculated_total += normal_scores[i] * normal_questions[i];
                     }
-                    if (normal_score > hard_score && section_info.normal_count > 0 && section_info.hard_count > 0) {
-                        const avg = (normal_score + hard_score) / 2;
-                        if (isDescriptive) {
-                            normal_score = this.roundToHalf(avg - 0.25);
-                            hard_score = this.roundToHalf(avg + 0.25);
-                        } else {
-                            normal_score = this.roundToTenth(avg - 0.1);
-                            hard_score = this.roundToTenth(avg + 0.1);
-                        }
+                    for (let i = 0; i < hard_scores.length; i++) {
+                        calculated_total += hard_scores[i] * hard_questions[i];
                     }
-                    if (easy_score > hard_score && section_info.easy_count > 0 && section_info.hard_count > 0) {
-                        const avg = (easy_score + hard_score) / 2;
-                        if (isDescriptive) {
-                            easy_score = this.roundToHalf(avg - 0.5);
-                            hard_score = this.roundToHalf(avg + 0.5);
-                        } else {
-                            easy_score = this.roundToTenth(avg - 0.2);
-                            hard_score = this.roundToTenth(avg + 0.2);
-                        }
-                    }
-
-                    const calculated_total = (easy_score * section_info.easy_count + 
-                                            normal_score * section_info.normal_count + 
-                                            hard_score * section_info.hard_count);
 
                     const difference = section_info.total_score - calculated_total;
 
@@ -539,34 +596,82 @@
                         break;
                     }
 
-                    const counts = [
-                        [section_info.easy_count, 'easy'],
-                        [section_info.normal_count, 'normal'],
-                        [section_info.hard_count, 'hard']
-                    ];
-                    counts.sort((a, b) => b[0] - a[0]);
+                    // 가장 많은 문항을 가진 배점에 오차 분배
+                    let max_questions = 0;
+                    let max_index = -1;
+                    let max_difficulty = '';
 
-                    const max_count_difficulty = counts[0][1];
-                    const adjustment = difference / counts[0][0];
-
-                    if (max_count_difficulty === 'easy' && section_info.easy_count > 0) {
-                        easy_score += adjustment;
-                    } else if (max_count_difficulty === 'normal' && section_info.normal_count > 0) {
-                        normal_score += adjustment;
-                    } else if (max_count_difficulty === 'hard' && section_info.hard_count > 0) {
-                        hard_score += adjustment;
+                    // 쉬운 문항에서 가장 많은 문항 찾기
+                    for (let i = 0; i < easy_questions.length; i++) {
+                        if (easy_questions[i] > max_questions) {
+                            max_questions = easy_questions[i];
+                            max_index = i;
+                            max_difficulty = 'easy';
+                        }
                     }
 
+                    // 보통 문항에서 가장 많은 문항 찾기
+                    for (let i = 0; i < normal_questions.length; i++) {
+                        if (normal_questions[i] > max_questions) {
+                            max_questions = normal_questions[i];
+                            max_index = i;
+                            max_difficulty = 'normal';
+                        }
+                    }
+
+                    // 어려운 문항에서 가장 많은 문항 찾기
+                    for (let i = 0; i < hard_questions.length; i++) {
+                        if (hard_questions[i] > max_questions) {
+                            max_questions = hard_questions[i];
+                            max_index = i;
+                            max_difficulty = 'hard';
+                        }
+                    }
+
+                    // 오차 조정
+                    if (max_difficulty === 'easy' && max_index >= 0 && easy_questions[max_index] > 0) {
+                        const adjustment = difference / easy_questions[max_index];
+                        easy_scores[max_index] += adjustment;
+                        if (isDescriptive) {
+                            easy_scores[max_index] = this.roundToHalf(easy_scores[max_index]);
+                        } else {
+                            easy_scores[max_index] = this.roundToTenth(easy_scores[max_index]);
+                        }
+                    } else if (max_difficulty === 'normal' && max_index >= 0 && normal_questions[max_index] > 0) {
+                        const adjustment = difference / normal_questions[max_index];
+                        normal_scores[max_index] += adjustment;
+                        if (isDescriptive) {
+                            normal_scores[max_index] = this.roundToHalf(normal_scores[max_index]);
+                        } else {
+                            normal_scores[max_index] = this.roundToTenth(normal_scores[max_index]);
+                        }
+                    } else if (max_difficulty === 'hard' && max_index >= 0 && hard_questions[max_index] > 0) {
+                        const adjustment = difference / hard_questions[max_index];
+                        hard_scores[max_index] += adjustment;
+                        if (isDescriptive) {
+                            hard_scores[max_index] = this.roundToHalf(hard_scores[max_index]);
+                        } else {
+                            hard_scores[max_index] = this.roundToTenth(hard_scores[max_index]);
+                        }
+                    }
+
+                    // 최소 점수 보장
                     const minScore = isDescriptive ? 0.5 : 0.1;
-                    easy_score = Math.max(easy_score, minScore);
-                    normal_score = Math.max(normal_score, minScore);
-                    hard_score = Math.max(hard_score, minScore);
+                    for (let i = 0; i < easy_scores.length; i++) {
+                        easy_scores[i] = Math.max(easy_scores[i], minScore);
+                    }
+                    for (let i = 0; i < normal_scores.length; i++) {
+                        normal_scores[i] = Math.max(normal_scores[i], minScore);
+                    }
+                    for (let i = 0; i < hard_scores.length; i++) {
+                        hard_scores[i] = Math.max(hard_scores[i], minScore);
+                    }
                 }
 
                 return {
-                    easy: easy_score,
-                    normal: normal_score,
-                    hard: hard_score
+                    easy: { scores: easy_scores, questions: easy_questions },
+                    normal: { scores: normal_scores, questions: normal_questions },
+                    hard: { scores: hard_scores, questions: hard_questions }
                 };
             }
 
@@ -574,13 +679,29 @@
                 const mc_scores = this.calculateScoresPrecise(this.multiple_choice, false);
                 const desc_scores = this.calculateScoresPrecise(this.descriptive, true);
 
-                const mc_actual_total = (mc_scores.easy * this.multiple_choice.easy_count +
-                                      mc_scores.normal * this.multiple_choice.normal_count +
-                                      mc_scores.hard * this.multiple_choice.hard_count);
+                // 객관식 총점 계산
+                let mc_actual_total = 0;
+                for (let i = 0; i < mc_scores.easy.scores.length; i++) {
+                    mc_actual_total += mc_scores.easy.scores[i] * mc_scores.easy.questions[i];
+                }
+                for (let i = 0; i < mc_scores.normal.scores.length; i++) {
+                    mc_actual_total += mc_scores.normal.scores[i] * mc_scores.normal.questions[i];
+                }
+                for (let i = 0; i < mc_scores.hard.scores.length; i++) {
+                    mc_actual_total += mc_scores.hard.scores[i] * mc_scores.hard.questions[i];
+                }
 
-                const desc_actual_total = (desc_scores.easy * this.descriptive.easy_count +
-                                        desc_scores.normal * this.descriptive.normal_count +
-                                        desc_scores.hard * this.descriptive.hard_count);
+                // 서술형 총점 계산
+                let desc_actual_total = 0;
+                for (let i = 0; i < desc_scores.easy.scores.length; i++) {
+                    desc_actual_total += desc_scores.easy.scores[i] * desc_scores.easy.questions[i];
+                }
+                for (let i = 0; i < desc_scores.normal.scores.length; i++) {
+                    desc_actual_total += desc_scores.normal.scores[i] * desc_scores.normal.questions[i];
+                }
+                for (let i = 0; i < desc_scores.hard.scores.length; i++) {
+                    desc_actual_total += desc_scores.hard.scores[i] * desc_scores.hard.questions[i];
+                }
 
                 const total_actual = mc_actual_total + desc_actual_total;
                 const total_target = this.multiple_choice.total_score + this.descriptive.total_score;
@@ -588,21 +709,11 @@
                 return {
                     multiple_choice: {
                         scores: mc_scores,
-                        counts: {
-                            easy: this.multiple_choice.easy_count,
-                            normal: this.multiple_choice.normal_count,
-                            hard: this.multiple_choice.hard_count
-                        },
                         total_score: this.multiple_choice.total_score,
                         actual_total: mc_actual_total
                     },
                     descriptive: {
                         scores: desc_scores,
-                        counts: {
-                            easy: this.descriptive.easy_count,
-                            normal: this.descriptive.normal_count,
-                            hard: this.descriptive.hard_count
-                        },
                         total_score: this.descriptive.total_score,
                         actual_total: desc_actual_total
                     },
@@ -672,20 +783,29 @@
             try {
                 await new Promise(resolve => setTimeout(resolve, 100));
 
-                const calc = new FinalExamScoreCalculator();
+                const calc = new AdvancedExamScoreCalculator();
 
+                // 객관식 데이터 수집
                 const mcTotalScore = parseFloat(document.getElementById('mcTotalScore').value) || 0;
                 const mcTotalQuestions = parseInt(document.getElementById('mcTotalQuestions').value) || 0;
                 const mcEasyCount = parseInt(document.getElementById('mcEasyCount').value) || 0;
                 const mcNormalCount = parseInt(document.getElementById('mcNormalCount').value) || 0;
                 const mcHardCount = parseInt(document.getElementById('mcHardCount').value) || 0;
+                const mcEasyScoreCount = parseInt(document.getElementById('mcEasyScoreCount').value) || 1;
+                const mcNormalScoreCount = parseInt(document.getElementById('mcNormalScoreCount').value) || 1;
+                const mcHardScoreCount = parseInt(document.getElementById('mcHardScoreCount').value) || 1;
 
+                // 서술형 데이터 수집
                 const descTotalScore = parseFloat(document.getElementById('descTotalScore').value) || 0;
                 const descTotalQuestions = parseInt(document.getElementById('descTotalQuestions').value) || 0;
                 const descEasyCount = parseInt(document.getElementById('descEasyCount').value) || 0;
                 const descNormalCount = parseInt(document.getElementById('descNormalCount').value) || 0;
                 const descHardCount = parseInt(document.getElementById('descHardCount').value) || 0;
+                const descEasyScoreCount = parseInt(document.getElementById('descEasyScoreCount').value) || 1;
+                const descNormalScoreCount = parseInt(document.getElementById('descNormalScoreCount').value) || 1;
+                const descHardScoreCount = parseInt(document.getElementById('descHardScoreCount').value) || 1;
 
+                // 유효성 검사
                 if (mcTotalQuestions > 0 && mcEasyCount + mcNormalCount + mcHardCount !== mcTotalQuestions) {
                     throw new Error("객관식: 난이도별 문항 수의 합이 전체 문항 수와 일치하지 않습니다.");
                 }
@@ -698,14 +818,18 @@
                     throw new Error("최소 하나의 문항 유형에 대한 정보를 입력해주세요.");
                 }
 
+                // 계산기 설정
                 if (mcTotalQuestions > 0) {
-                    calc.setMultipleChoice(mcTotalScore, mcTotalQuestions, mcEasyCount, mcNormalCount, mcHardCount);
+                    calc.setMultipleChoice(mcTotalScore, mcTotalQuestions, mcEasyCount, mcNormalCount, mcHardCount,
+                                         mcEasyScoreCount, mcNormalScoreCount, mcHardScoreCount);
                 }
 
                 if (descTotalQuestions > 0) {
-                    calc.setDescriptive(descTotalScore, descTotalQuestions, descEasyCount, descNormalCount, descHardCount);
+                    calc.setDescriptive(descTotalScore, descTotalQuestions, descEasyCount, descNormalCount, descHardCount,
+                                      descEasyScoreCount, descNormalScoreCount, descHardScoreCount);
                 }
 
+                // 정확한 결과가 나올 때까지 반복 계산
                 let results;
                 let attempts = 0;
                 const maxAttempts = 20;
@@ -735,43 +859,68 @@
             const descResultsDiv = document.getElementById('descResults');
             const summaryDiv = document.getElementById('summaryResults');
 
-            if (results.multiple_choice.counts.easy + results.multiple_choice.counts.normal + results.multiple_choice.counts.hard > 0) {
-                mcResultsDiv.innerHTML = `
+            // 객관식 결과 테이블
+            if (results.multiple_choice.scores.easy.scores.length > 0 || 
+                results.multiple_choice.scores.normal.scores.length > 0 || 
+                results.multiple_choice.scores.hard.scores.length > 0) {
+                
+                let mcTableHTML = `
                     <div class="section-header">📝 객관식 문항 배점 결과</div>
                     <table class="result-table">
                         <thead>
                             <tr>
                                 <th>난이도</th>
-                                <th>문항수</th>
                                 <th>배점</th>
+                                <th>문항수</th>
                                 <th>총점</th>
                             </tr>
                         </thead>
                         <tbody>
-                            ${results.multiple_choice.counts.easy > 0 ? `
-                                <tr>
-                                    <td class="difficulty-easy">쉬움</td>
-                                    <td>${results.multiple_choice.counts.easy}</td>
-                                    <td>${results.multiple_choice.scores.easy.toFixed(1)}</td>
-                                    <td>${(results.multiple_choice.scores.easy * results.multiple_choice.counts.easy).toFixed(1)}</td>
-                                </tr>
-                            ` : ''}
-                            ${results.multiple_choice.counts.normal > 0 ? `
-                                <tr>
-                                    <td class="difficulty-normal">보통</td>
-                                    <td>${results.multiple_choice.counts.normal}</td>
-                                    <td>${results.multiple_choice.scores.normal.toFixed(1)}</td>
-                                    <td>${(results.multiple_choice.scores.normal * results.multiple_choice.counts.normal).toFixed(1)}</td>
-                                </tr>
-                            ` : ''}
-                            ${results.multiple_choice.counts.hard > 0 ? `
-                                <tr>
-                                    <td class="difficulty-hard">어려움</td>
-                                    <td>${results.multiple_choice.counts.hard}</td>
-                                    <td>${results.multiple_choice.scores.hard.toFixed(1)}</td>
-                                    <td>${(results.multiple_choice.scores.hard * results.multiple_choice.counts.hard).toFixed(1)}</td>
-                                </tr>
-                            ` : ''}
+                `;
+
+                // 쉬운 문항
+                for (let i = 0; i < results.multiple_choice.scores.easy.scores.length; i++) {
+                    const score = results.multiple_choice.scores.easy.scores[i];
+                    const questions = results.multiple_choice.scores.easy.questions[i];
+                    mcTableHTML += `
+                        <tr>
+                            <td class="difficulty-easy">쉬움</td>
+                            <td>${score.toFixed(1)}</td>
+                            <td>${questions}</td>
+                            <td>${(score * questions).toFixed(1)}</td>
+                        </tr>
+                    `;
+                }
+
+                // 보통 문항
+                for (let i = 0; i < results.multiple_choice.scores.normal.scores.length; i++) {
+                    const score = results.multiple_choice.scores.normal.scores[i];
+                    const questions = results.multiple_choice.scores.normal.questions[i];
+                    mcTableHTML += `
+                        <tr>
+                            <td class="difficulty-normal">보통</td>
+                            <td>${score.toFixed(1)}</td>
+                            <td>${questions}</td>
+                            <td>${(score * questions).toFixed(1)}</td>
+                        </tr>
+                    `;
+                }
+
+                // 어려운 문항
+                for (let i = 0; i < results.multiple_choice.scores.hard.scores.length; i++) {
+                    const score = results.multiple_choice.scores.hard.scores[i];
+                    const questions = results.multiple_choice.scores.hard.questions[i];
+                    mcTableHTML += `
+                        <tr>
+                            <td class="difficulty-hard">어려움</td>
+                            <td>${score.toFixed(1)}</td>
+                            <td>${questions}</td>
+                            <td>${(score * questions).toFixed(1)}</td>
+                        </tr>
+                    `;
+                }
+
+                mcTableHTML += `
                             <tr style="background: #e3f2fd; font-weight: bold;">
                                 <td colspan="3">객관식 총계</td>
                                 <td>${results.multiple_choice.actual_total.toFixed(1)}</td>
@@ -779,47 +928,74 @@
                         </tbody>
                     </table>
                 `;
+
+                mcResultsDiv.innerHTML = mcTableHTML;
             } else {
                 mcResultsDiv.innerHTML = '';
             }
 
-            if (results.descriptive.counts.easy + results.descriptive.counts.normal + results.descriptive.counts.hard > 0) {
-                descResultsDiv.innerHTML = `
+            // 서술형 결과 테이블
+            if (results.descriptive.scores.easy.scores.length > 0 || 
+                results.descriptive.scores.normal.scores.length > 0 || 
+                results.descriptive.scores.hard.scores.length > 0) {
+                
+                let descTableHTML = `
                     <div class="section-header">✍️ 서술형 문항 배점 결과</div>
                     <table class="result-table">
                         <thead>
                             <tr>
                                 <th>난이도</th>
-                                <th>문항수</th>
                                 <th>배점</th>
+                                <th>문항수</th>
                                 <th>총점</th>
                             </tr>
                         </thead>
                         <tbody>
-                            ${results.descriptive.counts.easy > 0 ? `
-                                <tr>
-                                    <td class="difficulty-easy">쉬움</td>
-                                    <td>${results.descriptive.counts.easy}</td>
-                                    <td>${results.descriptive.scores.easy.toFixed(1)}</td>
-                                    <td>${(results.descriptive.scores.easy * results.descriptive.counts.easy).toFixed(1)}</td>
-                                </tr>
-                            ` : ''}
-                            ${results.descriptive.counts.normal > 0 ? `
-                                <tr>
-                                    <td class="difficulty-normal">보통</td>
-                                    <td>${results.descriptive.counts.normal}</td>
-                                    <td>${results.descriptive.scores.normal.toFixed(1)}</td>
-                                    <td>${(results.descriptive.scores.normal * results.descriptive.counts.normal).toFixed(1)}</td>
-                                </tr>
-                            ` : ''}
-                            ${results.descriptive.counts.hard > 0 ? `
-                                <tr>
-                                    <td class="difficulty-hard">어려움</td>
-                                    <td>${results.descriptive.counts.hard}</td>
-                                    <td>${results.descriptive.scores.hard.toFixed(1)}</td>
-                                    <td>${(results.descriptive.scores.hard * results.descriptive.counts.hard).toFixed(1)}</td>
-                                </tr>
-                            ` : ''}
+                `;
+
+                // 쉬운 문항
+                for (let i = 0; i < results.descriptive.scores.easy.scores.length; i++) {
+                    const score = results.descriptive.scores.easy.scores[i];
+                    const questions = results.descriptive.scores.easy.questions[i];
+                    descTableHTML += `
+                        <tr>
+                            <td class="difficulty-easy">쉬움</td>
+                            <td>${score.toFixed(1)}</td>
+                            <td>${questions}</td>
+                            <td>${(score * questions).toFixed(1)}</td>
+                        </tr>
+                    `;
+                }
+
+                // 보통 문항
+                for (let i = 0; i < results.descriptive.scores.normal.scores.length; i++) {
+                    const score = results.descriptive.scores.normal.scores[i];
+                    const questions = results.descriptive.scores.normal.questions[i];
+                    descTableHTML += `
+                        <tr>
+                            <td class="difficulty-normal">보통</td>
+                            <td>${score.toFixed(1)}</td>
+                            <td>${questions}</td>
+                            <td>${(score * questions).toFixed(1)}</td>
+                        </tr>
+                    `;
+                }
+
+                // 어려운 문항
+                for (let i = 0; i < results.descriptive.scores.hard.scores.length; i++) {
+                    const score = results.descriptive.scores.hard.scores[i];
+                    const questions = results.descriptive.scores.hard.questions[i];
+                    descTableHTML += `
+                        <tr>
+                            <td class="difficulty-hard">어려움</td>
+                            <td>${score.toFixed(1)}</td>
+                            <td>${questions}</td>
+                            <td>${(score * questions).toFixed(1)}</td>
+                        </tr>
+                    `;
+                }
+
+                descTableHTML += `
                             <tr style="background: #e3f2fd; font-weight: bold;">
                                 <td colspan="3">서술형 총계</td>
                                 <td>${results.descriptive.actual_total.toFixed(1)}</td>
@@ -827,10 +1003,13 @@
                         </tbody>
                     </table>
                 `;
+
+                descResultsDiv.innerHTML = descTableHTML;
             } else {
                 descResultsDiv.innerHTML = '';
             }
 
+            // 전체 요약
             const difference = results.summary.difference;
             summaryDiv.innerHTML = `
                 <h3>   전체 요약</h3>
@@ -844,17 +1023,24 @@
         }
 
         window.onload = function() {
+            // 예시 데이터 자동 입력
             document.getElementById('mcTotalScore').value = '60';
             document.getElementById('mcTotalQuestions').value = '20';
             document.getElementById('mcEasyCount').value = '8';
             document.getElementById('mcNormalCount').value = '8';
             document.getElementById('mcHardCount').value = '4';
+            document.getElementById('mcEasyScoreCount').value = '3';
+            document.getElementById('mcNormalScoreCount').value = '4';
+            document.getElementById('mcHardScoreCount').value = '3';
             
             document.getElementById('descTotalScore').value = '40';
             document.getElementById('descTotalQuestions').value = '4';
             document.getElementById('descEasyCount').value = '1';
             document.getElementById('descNormalCount').value = '2';
             document.getElementById('descHardCount').value = '1';
+            document.getElementById('descEasyScoreCount').value = '2';
+            document.getElementById('descNormalScoreCount').value = '3';
+            document.getElementById('descHardScoreCount').value = '2';
         };
     </script>
 </body>
