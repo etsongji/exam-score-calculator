@@ -1,0 +1,861 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>시험 배점 계산기</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: #f5f5f5;
+            padding: 8px;
+            font-size: 13px;
+            line-height: 1.4;
+        }
+
+        .container {
+            max-width: 500px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+
+        .header {
+            background: #2c3e50;
+            color: white;
+            padding: 12px 16px;
+            text-align: center;
+        }
+
+        .header h1 {
+            font-size: 1.2em;
+            font-weight: 500;
+            margin-bottom: 2px;
+        }
+
+        .header p {
+            font-size: 0.8em;
+            opacity: 0.8;
+        }
+
+        .content {
+            padding: 12px;
+        }
+
+        .input-section {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+            margin-bottom: 16px;
+        }
+
+        .section-card {
+            background: #f8f9fa;
+            border-radius: 6px;
+            padding: 10px;
+            border: 1px solid #e9ecef;
+        }
+
+        .section-title {
+            font-size: 0.9em;
+            margin-bottom: 8px;
+            color: #2c3e50;
+            font-weight: 600;
+        }
+
+        .form-group {
+            margin-bottom: 8px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 2px;
+            font-weight: 500;
+            color: #495057;
+            font-size: 0.8em;
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 6px 8px;
+            border: 1px solid #dee2e6;
+            border-radius: 4px;
+            font-size: 12px;
+            transition: border-color 0.2s ease;
+        }
+
+        .form-group input:focus {
+            outline: none;
+            border-color: #2c3e50;
+        }
+
+        .calculate-btn {
+            background: #2c3e50;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            font-size: 0.9em;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: background-color 0.2s ease;
+            display: block;
+            margin: 12px auto;
+            font-weight: 500;
+            width: 100%;
+        }
+
+        .calculate-btn:hover {
+            background: #34495e;
+        }
+
+        .calculate-btn:disabled {
+            background: #95a5a6;
+            cursor: not-allowed;
+        }
+
+        .loading {
+            display: none;
+            text-align: center;
+            padding: 12px;
+            color: #6c757d;
+            font-size: 0.8em;
+        }
+
+        .loading.show {
+            display: block;
+        }
+
+        .loading .spinner {
+            border: 2px solid #f3f3f3;
+            border-top: 2px solid #2c3e50;
+            border-radius: 50%;
+            width: 20px;
+            height: 20px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 6px;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .results {
+            background: #f8f9fa;
+            border-radius: 6px;
+            padding: 12px;
+            margin-top: 12px;
+            display: none;
+        }
+
+        .results.show {
+            display: block;
+            animation: fadeIn 0.2s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        .result-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 8px 0;
+            background: white;
+            border-radius: 4px;
+            overflow: hidden;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+            font-size: 11px;
+        }
+
+        .result-table th {
+            background: #2c3e50;
+            color: white;
+            padding: 6px 4px;
+            text-align: center;
+            font-weight: 500;
+            font-size: 10px;
+        }
+
+        .result-table td {
+            padding: 4px 3px;
+            text-align: center;
+            border-bottom: 1px solid #e9ecef;
+            font-size: 10px;
+        }
+
+        .result-table tr:nth-child(even) {
+            background: #f8f9fa;
+        }
+
+        .difficulty-easy {
+            color: #28a745;
+            font-weight: 600;
+        }
+
+        .difficulty-normal {
+            color: #ffc107;
+            font-weight: 600;
+        }
+
+        .difficulty-hard {
+            color: #dc3545;
+            font-weight: 600;
+        }
+
+        .summary {
+            background: #2c3e50;
+            color: white;
+            padding: 8px;
+            border-radius: 4px;
+            text-align: center;
+            margin-top: 8px;
+            font-size: 11px;
+        }
+
+        .summary h3 {
+            font-size: 0.9em;
+            margin-bottom: 4px;
+        }
+
+        .summary p {
+            margin: 2px 0;
+            font-size: 0.8em;
+        }
+
+        .error {
+            background: #dc3545;
+            color: white;
+            padding: 8px;
+            border-radius: 4px;
+            margin-bottom: 8px;
+            display: none;
+            font-size: 11px;
+        }
+
+        .error.show {
+            display: block;
+        }
+
+        .success {
+            background: #28a745;
+            color: white;
+            padding: 8px;
+            border-radius: 4px;
+            margin-bottom: 8px;
+            display: none;
+            font-size: 11px;
+        }
+
+        .success.show {
+            display: block;
+        }
+
+        .section-header {
+            font-size: 0.9em;
+            margin: 8px 0 4px 0;
+            color: #2c3e50;
+            font-weight: 600;
+        }
+
+        /* 모바일에서 1열 레이아웃 */
+        @media (max-width: 600px) {
+            .input-section {
+                grid-template-columns: 1fr;
+                gap: 8px;
+            }
+            
+            .content {
+                padding: 8px;
+            }
+            
+            .header {
+                padding: 10px 12px;
+            }
+            
+            .header h1 {
+                font-size: 1.1em;
+            }
+            
+            .section-card {
+                padding: 8px;
+            }
+            
+            .result-table th,
+            .result-table td {
+                padding: 3px 2px;
+                font-size: 9px;
+            }
+        }
+
+        /* 매우 작은 화면 */
+        @media (max-width: 320px) {
+            body {
+                padding: 4px;
+                font-size: 12px;
+            }
+            
+            .container {
+                max-width: 100%;
+            }
+            
+            .content {
+                padding: 6px;
+            }
+            
+            .header {
+                padding: 8px 10px;
+            }
+            
+            .header h1 {
+                font-size: 1em;
+            }
+            
+            .section-card {
+                padding: 6px;
+            }
+            
+            .result-table th,
+            .result-table td {
+                padding: 2px 1px;
+                font-size: 8px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>📊 시험 배점 계산기</h1>
+            <p>정확한 총점 매칭과 난이도별 배점 최적화</p>
+        </div>
+
+        <div class="content">
+            <div class="error" id="errorMessage"></div>
+            <div class="success" id="successMessage"></div>
+            <div class="loading" id="loadingMessage">
+                <div class="spinner"></div>
+                <div>정확한 배점을 계산하고 있습니다...</div>
+            </div>
+
+            <div class="input-section">
+                <div class="section-card">
+                    <div class="section-title">📝 객관식</div>
+                    <div class="form-group">
+                        <label>전체 배점</label>
+                        <input type="number" id="mcTotalScore" placeholder="60" min="0" step="0.1">
+                    </div>
+                    <div class="form-group">
+                        <label>전체 문항</label>
+                        <input type="number" id="mcTotalQuestions" placeholder="20" min="0">
+                    </div>
+                    <div class="form-group">
+                        <label>쉬운 문항</label>
+                        <input type="number" id="mcEasyCount" placeholder="8" min="0">
+                    </div>
+                    <div class="form-group">
+                        <label>보통 문항</label>
+                        <input type="number" id="mcNormalCount" placeholder="8" min="0">
+                    </div>
+                    <div class="form-group">
+                        <label>어려운 문항</label>
+                        <input type="number" id="mcHardCount" placeholder="4" min="0">
+                    </div>
+                </div>
+
+                <div class="section-card">
+                    <div class="section-title">✍️ 서술형</div>
+                    <div class="form-group">
+                        <label>전체 배점</label>
+                        <input type="number" id="descTotalScore" placeholder="40" min="0" step="0.1">
+                    </div>
+                    <div class="form-group">
+                        <label>전체 문항</label>
+                        <input type="number" id="descTotalQuestions" placeholder="4" min="0">
+                    </div>
+                    <div class="form-group">
+                        <label>쉬운 문항</label>
+                        <input type="number" id="descEasyCount" placeholder="1" min="0">
+                    </div>
+                    <div class="form-group">
+                        <label>보통 문항</label>
+                        <input type="number" id="descNormalCount" placeholder="2" min="0">
+                    </div>
+                    <div class="form-group">
+                        <label>어려운 문항</label>
+                        <input type="number" id="descHardCount" placeholder="1" min="0">
+                    </div>
+                </div>
+            </div>
+
+            <button class="calculate-btn" id="calculateBtn" onclick="calculateScores()">🎯 배점 계산하기</button>
+
+            <div class="results" id="results">
+                <div id="mcResults"></div>
+                <div id="descResults"></div>
+                <div class="summary" id="summaryResults"></div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        class FinalExamScoreCalculator {
+            constructor() {
+                this.multiple_choice = {
+                    total_score: 0,
+                    total_questions: 0,
+                    easy_count: 0,
+                    normal_count: 0,
+                    hard_count: 0
+                };
+                this.descriptive = {
+                    total_score: 0,
+                    total_questions: 0,
+                    easy_count: 0,
+                    normal_count: 0,
+                    hard_count: 0
+                };
+            }
+
+            setMultipleChoice(total_score, total_questions, easy_count, normal_count, hard_count) {
+                if (easy_count + normal_count + hard_count !== total_questions) {
+                    throw new Error("객관식: 난이도별 문항 수의 합이 전체 문항 수와 일치하지 않습니다.");
+                }
+                
+                this.multiple_choice = {
+                    total_score: total_score,
+                    total_questions: total_questions,
+                    easy_count: easy_count,
+                    normal_count: normal_count,
+                    hard_count: hard_count
+                };
+            }
+
+            setDescriptive(total_score, total_questions, easy_count, normal_count, hard_count) {
+                if (easy_count + normal_count + hard_count !== total_questions) {
+                    throw new Error("서술형: 난이도별 문항 수의 합이 전체 문항 수와 일치하지 않습니다.");
+                }
+                
+                this.descriptive = {
+                    total_score: total_score,
+                    total_questions: total_questions,
+                    easy_count: easy_count,
+                    normal_count: normal_count,
+                    hard_count: hard_count
+                };
+            }
+
+            roundToHalf(value) {
+                return Math.round(value * 2) / 2;
+            }
+
+            roundToTenth(value) {
+                return Math.round(value * 10) / 10;
+            }
+
+            calculateScoresPrecise(section_info, isDescriptive = false, maxIterations = 1000) {
+                if (section_info.total_questions === 0) {
+                    return { easy: 0, normal: 0, hard: 0 };
+                }
+
+                const easy_weight = 1.0;
+                const normal_weight = 1.5;
+                const hard_weight = 2.0;
+
+                const total_weight = (section_info.easy_count * easy_weight + 
+                                   section_info.normal_count * normal_weight + 
+                                   section_info.hard_count * hard_weight);
+
+                if (total_weight === 0) {
+                    return { easy: 0, normal: 0, hard: 0 };
+                }
+
+                const easy_total_score = (section_info.total_score * easy_weight * section_info.easy_count) / total_weight;
+                const normal_total_score = (section_info.total_score * normal_weight * section_info.normal_count) / total_weight;
+                const hard_total_score = (section_info.total_score * hard_weight * section_info.hard_count) / total_weight;
+
+                let easy_score = section_info.easy_count > 0 ? easy_total_score / section_info.easy_count : 0;
+                let normal_score = section_info.normal_count > 0 ? normal_total_score / section_info.normal_count : 0;
+                let hard_score = section_info.hard_count > 0 ? hard_total_score / section_info.hard_count : 0;
+
+                for (let iteration = 0; iteration < maxIterations; iteration++) {
+                    if (isDescriptive) {
+                        easy_score = this.roundToHalf(easy_score);
+                        normal_score = this.roundToHalf(normal_score);
+                        hard_score = this.roundToHalf(hard_score);
+                    } else {
+                        easy_score = this.roundToTenth(easy_score);
+                        normal_score = this.roundToTenth(normal_score);
+                        hard_score = this.roundToTenth(hard_score);
+                    }
+
+                    if (easy_score > normal_score && section_info.easy_count > 0 && section_info.normal_count > 0) {
+                        const avg = (easy_score + normal_score) / 2;
+                        if (isDescriptive) {
+                            easy_score = this.roundToHalf(avg - 0.25);
+                            normal_score = this.roundToHalf(avg + 0.25);
+                        } else {
+                            easy_score = this.roundToTenth(avg - 0.1);
+                            normal_score = this.roundToTenth(avg + 0.1);
+                        }
+                    }
+                    if (normal_score > hard_score && section_info.normal_count > 0 && section_info.hard_count > 0) {
+                        const avg = (normal_score + hard_score) / 2;
+                        if (isDescriptive) {
+                            normal_score = this.roundToHalf(avg - 0.25);
+                            hard_score = this.roundToHalf(avg + 0.25);
+                        } else {
+                            normal_score = this.roundToTenth(avg - 0.1);
+                            hard_score = this.roundToTenth(avg + 0.1);
+                        }
+                    }
+                    if (easy_score > hard_score && section_info.easy_count > 0 && section_info.hard_count > 0) {
+                        const avg = (easy_score + hard_score) / 2;
+                        if (isDescriptive) {
+                            easy_score = this.roundToHalf(avg - 0.5);
+                            hard_score = this.roundToHalf(avg + 0.5);
+                        } else {
+                            easy_score = this.roundToTenth(avg - 0.2);
+                            hard_score = this.roundToTenth(avg + 0.2);
+                        }
+                    }
+
+                    const calculated_total = (easy_score * section_info.easy_count + 
+                                            normal_score * section_info.normal_count + 
+                                            hard_score * section_info.hard_count);
+
+                    const difference = section_info.total_score - calculated_total;
+
+                    if (Math.abs(difference) < 0.01) {
+                        break;
+                    }
+
+                    const counts = [
+                        [section_info.easy_count, 'easy'],
+                        [section_info.normal_count, 'normal'],
+                        [section_info.hard_count, 'hard']
+                    ];
+                    counts.sort((a, b) => b[0] - a[0]);
+
+                    const max_count_difficulty = counts[0][1];
+                    const adjustment = difference / counts[0][0];
+
+                    if (max_count_difficulty === 'easy' && section_info.easy_count > 0) {
+                        easy_score += adjustment;
+                    } else if (max_count_difficulty === 'normal' && section_info.normal_count > 0) {
+                        normal_score += adjustment;
+                    } else if (max_count_difficulty === 'hard' && section_info.hard_count > 0) {
+                        hard_score += adjustment;
+                    }
+
+                    const minScore = isDescriptive ? 0.5 : 0.1;
+                    easy_score = Math.max(easy_score, minScore);
+                    normal_score = Math.max(normal_score, minScore);
+                    hard_score = Math.max(hard_score, minScore);
+                }
+
+                return {
+                    easy: easy_score,
+                    normal: normal_score,
+                    hard: hard_score
+                };
+            }
+
+            getResults() {
+                const mc_scores = this.calculateScoresPrecise(this.multiple_choice, false);
+                const desc_scores = this.calculateScoresPrecise(this.descriptive, true);
+
+                const mc_actual_total = (mc_scores.easy * this.multiple_choice.easy_count +
+                                      mc_scores.normal * this.multiple_choice.normal_count +
+                                      mc_scores.hard * this.multiple_choice.hard_count);
+
+                const desc_actual_total = (desc_scores.easy * this.descriptive.easy_count +
+                                        desc_scores.normal * this.descriptive.normal_count +
+                                        desc_scores.hard * this.descriptive.hard_count);
+
+                const total_actual = mc_actual_total + desc_actual_total;
+                const total_target = this.multiple_choice.total_score + this.descriptive.total_score;
+
+                return {
+                    multiple_choice: {
+                        scores: mc_scores,
+                        counts: {
+                            easy: this.multiple_choice.easy_count,
+                            normal: this.multiple_choice.normal_count,
+                            hard: this.multiple_choice.hard_count
+                        },
+                        total_score: this.multiple_choice.total_score,
+                        actual_total: mc_actual_total
+                    },
+                    descriptive: {
+                        scores: desc_scores,
+                        counts: {
+                            easy: this.descriptive.easy_count,
+                            normal: this.descriptive.normal_count,
+                            hard: this.descriptive.hard_count
+                        },
+                        total_score: this.descriptive.total_score,
+                        actual_total: desc_actual_total
+                    },
+                    summary: {
+                        target_total: total_target,
+                        actual_total: total_actual,
+                        difference: total_actual - total_target
+                    }
+                };
+            }
+
+            isAccurate(results) {
+                return Math.abs(results.summary.difference) < 0.01;
+            }
+        }
+
+        function showError(message) {
+            const errorDiv = document.getElementById('errorMessage');
+            const successDiv = document.getElementById('successMessage');
+            const loadingDiv = document.getElementById('loadingMessage');
+            errorDiv.textContent = message;
+            errorDiv.classList.add('show');
+            successDiv.classList.remove('show');
+            loadingDiv.classList.remove('show');
+        }
+
+        function showSuccess(message) {
+            const errorDiv = document.getElementById('errorMessage');
+            const successDiv = document.getElementById('successMessage');
+            const loadingDiv = document.getElementById('loadingMessage');
+            successDiv.textContent = message;
+            successDiv.classList.add('show');
+            errorDiv.classList.remove('show');
+            loadingDiv.classList.remove('show');
+        }
+
+        function showLoading() {
+            const errorDiv = document.getElementById('errorMessage');
+            const successDiv = document.getElementById('successMessage');
+            const loadingDiv = document.getElementById('loadingMessage');
+            loadingDiv.classList.add('show');
+            errorDiv.classList.remove('show');
+            successDiv.classList.remove('show');
+        }
+
+        function hideMessages() {
+            document.getElementById('errorMessage').classList.remove('show');
+            document.getElementById('successMessage').classList.remove('show');
+            document.getElementById('loadingMessage').classList.remove('show');
+        }
+
+        function setButtonState(disabled) {
+            const btn = document.getElementById('calculateBtn');
+            btn.disabled = disabled;
+            if (disabled) {
+                btn.textContent = '계산 중...';
+            } else {
+                btn.textContent = '🎯 배점 계산하기';
+            }
+        }
+
+        async function calculateScores() {
+            hideMessages();
+            setButtonState(true);
+            showLoading();
+
+            try {
+                await new Promise(resolve => setTimeout(resolve, 100));
+
+                const calc = new FinalExamScoreCalculator();
+
+                const mcTotalScore = parseFloat(document.getElementById('mcTotalScore').value) || 0;
+                const mcTotalQuestions = parseInt(document.getElementById('mcTotalQuestions').value) || 0;
+                const mcEasyCount = parseInt(document.getElementById('mcEasyCount').value) || 0;
+                const mcNormalCount = parseInt(document.getElementById('mcNormalCount').value) || 0;
+                const mcHardCount = parseInt(document.getElementById('mcHardCount').value) || 0;
+
+                const descTotalScore = parseFloat(document.getElementById('descTotalScore').value) || 0;
+                const descTotalQuestions = parseInt(document.getElementById('descTotalQuestions').value) || 0;
+                const descEasyCount = parseInt(document.getElementById('descEasyCount').value) || 0;
+                const descNormalCount = parseInt(document.getElementById('descNormalCount').value) || 0;
+                const descHardCount = parseInt(document.getElementById('descHardCount').value) || 0;
+
+                if (mcTotalQuestions > 0 && mcEasyCount + mcNormalCount + mcHardCount !== mcTotalQuestions) {
+                    throw new Error("객관식: 난이도별 문항 수의 합이 전체 문항 수와 일치하지 않습니다.");
+                }
+
+                if (descTotalQuestions > 0 && descEasyCount + descNormalCount + descHardCount !== descTotalQuestions) {
+                    throw new Error("서술형: 난이도별 문항 수의 합이 전체 문항 수와 일치하지 않습니다.");
+                }
+
+                if (mcTotalQuestions === 0 && descTotalQuestions === 0) {
+                    throw new Error("최소 하나의 문항 유형에 대한 정보를 입력해주세요.");
+                }
+
+                if (mcTotalQuestions > 0) {
+                    calc.setMultipleChoice(mcTotalScore, mcTotalQuestions, mcEasyCount, mcNormalCount, mcHardCount);
+                }
+
+                if (descTotalQuestions > 0) {
+                    calc.setDescriptive(descTotalScore, descTotalQuestions, descEasyCount, descNormalCount, descHardCount);
+                }
+
+                let results;
+                let attempts = 0;
+                const maxAttempts = 20;
+
+                do {
+                    results = calc.getResults();
+                    attempts++;
+                    
+                    if (attempts >= maxAttempts) {
+                        throw new Error("정확한 배점을 계산할 수 없습니다. 입력값을 확인해주세요.");
+                    }
+                } while (!calc.isAccurate(results));
+
+                displayResults(results);
+                showSuccess(`✅ 정확한 배점 계산 완료! (${attempts}번째 시도에서 성공)`);
+
+            } catch (error) {
+                showError(error.message);
+            } finally {
+                setButtonState(false);
+            }
+        }
+
+        function displayResults(results) {
+            const resultsDiv = document.getElementById('results');
+            const mcResultsDiv = document.getElementById('mcResults');
+            const descResultsDiv = document.getElementById('descResults');
+            const summaryDiv = document.getElementById('summaryResults');
+
+            if (results.multiple_choice.counts.easy + results.multiple_choice.counts.normal + results.multiple_choice.counts.hard > 0) {
+                mcResultsDiv.innerHTML = `
+                    <div class="section-header">📝 객관식 문항 배점 결과</div>
+                    <table class="result-table">
+                        <thead>
+                            <tr>
+                                <th>난이도</th>
+                                <th>문항수</th>
+                                <th>배점</th>
+                                <th>총점</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            ${results.multiple_choice.counts.easy > 0 ? `
+                                <tr>
+                                    <td class="difficulty-easy">쉬움</td>
+                                    <td>${results.multiple_choice.counts.easy}</td>
+                                    <td>${results.multiple_choice.scores.easy.toFixed(1)}</td>
+                                    <td>${(results.multiple_choice.scores.easy * results.multiple_choice.counts.easy).toFixed(1)}</td>
+                                </tr>
+                            ` : ''}
+                            ${results.multiple_choice.counts.normal > 0 ? `
+                                <tr>
+                                    <td class="difficulty-normal">보통</td>
+                                    <td>${results.multiple_choice.counts.normal}</td>
+                                    <td>${results.multiple_choice.scores.normal.toFixed(1)}</td>
+                                    <td>${(results.multiple_choice.scores.normal * results.multiple_choice.counts.normal).toFixed(1)}</td>
+                                </tr>
+                            ` : ''}
+                            ${results.multiple_choice.counts.hard > 0 ? `
+                                <tr>
+                                    <td class="difficulty-hard">어려움</td>
+                                    <td>${results.multiple_choice.counts.hard}</td>
+                                    <td>${results.multiple_choice.scores.hard.toFixed(1)}</td>
+                                    <td>${(results.multiple_choice.scores.hard * results.multiple_choice.counts.hard).toFixed(1)}</td>
+                                </tr>
+                            ` : ''}
+                            <tr style="background: #e3f2fd; font-weight: bold;">
+                                <td colspan="3">객관식 총계</td>
+                                <td>${results.multiple_choice.actual_total.toFixed(1)}</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                `;
+            } else {
+                mcResultsDiv.innerHTML = '';
+            }
+
+            if (results.descriptive.counts.easy + results.descriptive.counts.normal + results.descriptive.counts.hard > 0) {
+                descResultsDiv.innerHTML = `
+                    <div class="section-header">✍️ 서술형 문항 배점 결과</div>
+                    <table class="result-table">
+                        <thead>
+                            <tr>
+                                <th>난이도</th>
+                                <th>문항수</th>
+                                <th>배점</th>
+                                <th>총점</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            ${results.descriptive.counts.easy > 0 ? `
+                                <tr>
+                                    <td class="difficulty-easy">쉬움</td>
+                                    <td>${results.descriptive.counts.easy}</td>
+                                    <td>${results.descriptive.scores.easy.toFixed(1)}</td>
+                                    <td>${(results.descriptive.scores.easy * results.descriptive.counts.easy).toFixed(1)}</td>
+                                </tr>
+                            ` : ''}
+                            ${results.descriptive.counts.normal > 0 ? `
+                                <tr>
+                                    <td class="difficulty-normal">보통</td>
+                                    <td>${results.descriptive.counts.normal}</td>
+                                    <td>${results.descriptive.scores.normal.toFixed(1)}</td>
+                                    <td>${(results.descriptive.scores.normal * results.descriptive.counts.normal).toFixed(1)}</td>
+                                </tr>
+                            ` : ''}
+                            ${results.descriptive.counts.hard > 0 ? `
+                                <tr>
+                                    <td class="difficulty-hard">어려움</td>
+                                    <td>${results.descriptive.counts.hard}</td>
+                                    <td>${results.descriptive.scores.hard.toFixed(1)}</td>
+                                    <td>${(results.descriptive.scores.hard * results.descriptive.counts.hard).toFixed(1)}</td>
+                                </tr>
+                            ` : ''}
+                            <tr style="background: #e3f2fd; font-weight: bold;">
+                                <td colspan="3">서술형 총계</td>
+                                <td>${results.descriptive.actual_total.toFixed(1)}</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                `;
+            } else {
+                descResultsDiv.innerHTML = '';
+            }
+
+            const difference = results.summary.difference;
+            summaryDiv.innerHTML = `
+                <h3>   전체 요약</h3>
+                <p><strong>목표:</strong> ${results.summary.target_total}점</p>
+                <p><strong>실제:</strong> ${results.summary.actual_total.toFixed(1)}점</p>
+                <p><strong>차이:</strong> ${difference > 0 ? '+' : ''}${difference.toFixed(2)}점</p>
+                <p style="margin-top: 4px; font-size: 0.8em;">✅ 배점이 정확히 일치합니다!</p>
+            `;
+
+            resultsDiv.classList.add('show');
+        }
+
+        window.onload = function() {
+            document.getElementById('mcTotalScore').value = '60';
+            document.getElementById('mcTotalQuestions').value = '20';
+            document.getElementById('mcEasyCount').value = '8';
+            document.getElementById('mcNormalCount').value = '8';
+            document.getElementById('mcHardCount').value = '4';
+            
+            document.getElementById('descTotalScore').value = '40';
+            document.getElementById('descTotalQuestions').value = '4';
+            document.getElementById('descEasyCount').value = '1';
+            document.getElementById('descNormalCount').value = '2';
+            document.getElementById('descHardCount').value = '1';
+        };
+    </script>
+</body>
+</html>
